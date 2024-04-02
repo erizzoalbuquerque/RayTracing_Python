@@ -8,12 +8,13 @@ from RayTracing.render import render
 import glm
 
 def CreateScene():
-    sphere_instance = Instance( glm.vec3(-5,1,-5), Sphere(1) )
-    sphere_instance2 = Instance( glm.vec3(3,0,1.25), Sphere(1))
-    point_instance = Instance( glm.vec3(0,2,-10), Point())
-    scene = Scene([sphere_instance])
-    #scene = Scene([point_instance])
-    #scene = Scene([])
+    
+    instances = []
+    
+    instances.append( Instance( glm.vec3(0,0,10), Sphere(1) ) )
+    #instances.append( Instance( glm.vec3(0,0,10), Point() ) )
+
+    scene = Scene(instances)
     
     return scene
 
@@ -26,7 +27,7 @@ if __name__ == '__main__':
     
     film = Film(WIDTH,HEIGHT)
     
-    camera = Camera(60, 10, WIDTH/HEIGHT, glm.vec3(0,0,0), glm.vec3(0,0,-10), glm.vec3(0,1,0))
+    camera = Camera(60, 10, WIDTH/HEIGHT, glm.vec3(0,0,0), glm.vec3(0,0,10), glm.vec3(0,1,0))
     
     scene = CreateScene()
     

@@ -6,8 +6,7 @@ class Ray:
         self.direction = glm.normalize(direction)
         
 class Hit:
-    def __init__(self, instance = None, distance = -1, position = glm.vec3(), normal = glm.vec3(), is_backface = False) -> None:
-        self.instance = instance
+    def __init__(self, distance : float = -1 , position : glm.vec3 = glm.vec3(), normal : glm.vec3 = glm.vec3(1), is_backface : bool = False) -> None:
         self.distance = distance
         self.position = position
         self.normal = glm.normalize(normal)

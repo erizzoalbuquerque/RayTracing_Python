@@ -1,5 +1,6 @@
 import glm
 import math
+
 from RayTracing.ray import Ray,Hit
 
 class Shape:
@@ -7,8 +8,9 @@ class Shape:
         pass
         
     def intersect(self, ray : Ray , shape_position : glm.vec3) -> Hit:
-        return Hit()
-        
+        return None
+    
+    
         
 class Sphere(Shape):
     def __init__(self, radius) -> None:
@@ -24,13 +26,15 @@ class Sphere(Shape):
         
         
         if (delta < 0):
-            return Hit()
+            return None # no hit
+        
         else:  
             t1 = ( -b + math.sqrt(delta) ) / ( 2 * a )
             t2 = ( -b - math.sqrt(delta) ) / ( 2 * a )
             
             if (t1 < 0 and t2 < 0):
-                return Hit()
+                return None # no hit
+            
             else:
                 if ((t1 >= 0 and t2 < 0) or (t1 < 0 and t2 >= 0)):
                     distance = max(t1,t2)
@@ -41,7 +45,8 @@ class Sphere(Shape):
                     
                 hit_pos = ray.origin + ray.direction*distance 
                 normal = hit_pos - shape_position
-                return Hit( self, distance, hit_pos, normal, is_backface )
+                return Hit( distance, hit_pos, normal, is_backface )
+  
             
 class Point(Shape):
     def __init__(self) -> None:
@@ -54,13 +59,10 @@ class Point(Shape):
         dot = glm.dot(glm.normalize(ray.direction),glm.normalize(shape_position - ray.origin))
         
         if dot < 0:
-            return Hit()
+            return None # no hit
         else:
             if dot >= min_dot:
                 distance = (shape_position - ray.origin)[0] / ray.direction[0]
-                return Hit(self, distance, shape_position, glm.vec3(1),False)
-        
-        return super().intersect(ray, shape_position)
-        
+                return Hit( distance, shape_position, glm.vec3(1),False)
         
         
