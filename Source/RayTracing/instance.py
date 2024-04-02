@@ -18,8 +18,7 @@ class Instance:
             return hit
         else:
             return None
-            
-    
+  
 
 class ObjectInstance(Instance):
     
@@ -33,3 +32,4 @@ class LightInstance(Instance):
     def __init__(self, position : glm.vec3, shape : Shape, light : Light) -> None:
         super().__init__(position, shape)
         self.light = light
+        light.position = position

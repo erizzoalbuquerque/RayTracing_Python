@@ -1,11 +1,23 @@
-from RayTracing.ray import Ray,Hit
-from RayTracing.instance import Instance
 import sys
-import glm
+
+from RayTracing.ray import Ray,Hit
+from RayTracing.instance import Instance, ObjectInstance, LightInstance
+from RayTracing.color import Color
 
 class Scene:
     def __init__(self, instances : list[Instance]) -> None:
         self.instances = instances
+        self.light_instances = []
+        self.object_instances = []
+        self.lights = []
+        
+        for instance in self.instances:
+            if type(instance) == LightInstance:
+                self.light_instances.append(instance)
+                self.lights.append(instance.light)
+            elif type(instance) == ObjectInstance:    
+                self.object_instances.append(instance)       
+                     
         
     def compute_intersection(self, ray) -> tuple[Instance, Hit]:
        
@@ -26,23 +38,39 @@ class Scene:
         
         return (hit_instance,hit)
     
-    def trace_ray(self,ray):
+    def trace_ray(self,ray) -> Color:
+        
+        color = Color(0,0,0)
         
         (hit_instance, hit) = self.compute_intersection(ray)
+                        
+        if hit_instance is not None: 
+            
+            if type(hit_instance) is LightInstance:
+                
+                light_instance : LightInstance = hit_instance                
+                r = hit.distance
+                intensity = light_instance.light.power / r**2
+                color =  Color(intensity, intensity, intensity)
+            
+            elif type(hit_instance) == ObjectInstance:
+                
+                object_instance : ObjectInstance = hit_instance
+                
+                color = object_instance.material.eval(self.lights, hit, ray.origin)      
         
-        if hit_instance is not None:
-            color_intensity = max(0.2, glm.dot(hit.normal,glm.vec3(0,1,0)) )        
-            return (color_intensity,color_intensity,color_intensity)
-        else:
-            return self.get_background_color(ray)
+        else: # Hit nothing
+            color = self.get_background_color(ray)
+        
+        return color
         
         
-    def get_background_color(self, ray : Ray) -> tuple[float,float,float]:
+    def get_background_color(self, ray : Ray) -> Color:
         r = ray.direction.x
         g = ray.direction.y
         b = ray.direction.z        
         
-        return (r,g,b)
+        return Color(r,g,b)
     
     
     
