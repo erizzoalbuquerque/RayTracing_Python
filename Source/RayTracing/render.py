@@ -21,8 +21,7 @@ def render(film : Film, camera : Camera, scene : Scene):
     for i in range(film.width):
         for j in range(film.height):
             
-            color = Color(0,0,0)
-            
+            color = Color(0,0,0)            
             for k in range(film_sample_count):
                 #print(f"Rendering pixel {i}, {j}...")
                 (x,y) = film.get_sample(i,j)

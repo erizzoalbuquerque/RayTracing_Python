@@ -31,9 +31,9 @@ def CreateScene():
 if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "../Images"
-    FILM_SAMPLE_COUNT = 1
-    WIDTH, HEIGHT = 128, 128
-    #WIDTH, HEIGHT = 360, 360
+    FILM_SAMPLE_COUNT = 16
+    #WIDTH, HEIGHT = 128, 128
+    WIDTH, HEIGHT = 360, 360
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
     
