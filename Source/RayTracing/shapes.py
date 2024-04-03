@@ -1,5 +1,6 @@
 import glm
 import math
+import sys
 
 from RayTracing.ray import Ray,Hit
 
@@ -22,8 +23,7 @@ class Sphere(Shape):
         b : float = 2 * glm.dot(ray.direction , (ray.origin - shape_position))
         c : float = glm.dot(ray.origin - shape_position , ray.origin - shape_position) - math.pow(self.radius,2)
         
-        delta : float = math.pow(b,2) - 4*a*c
-        
+        delta : float = math.pow(b,2) - 4*a*c        
         
         if (delta < 0):
             return None # no hit
@@ -46,6 +46,33 @@ class Sphere(Shape):
                 hit_pos = ray.origin + ray.direction*distance 
                 normal = hit_pos - shape_position
                 return Hit( distance, hit_pos, normal, is_backface )
+            
+            
+class Plane(Shape):
+    
+    def __init__(self, normal : glm.vec3) -> None:
+        self.normal = glm.normalize( normal )
+        
+    def intersect(self, ray : Ray , shape_position : glm.vec3) -> Hit:
+        
+        denom = glm.dot(self.normal,ray.direction)
+        
+        if glm.abs(denom) > sys.float_info.epsilon:
+            t = glm.dot(shape_position - ray.origin, self.normal) / denom
+            if t >= 0:
+                hit_pos = ray.origin + ray.direction * t
+                
+                if (denom> 0):
+                    is_backface = True
+                else:
+                    is_backface = False
+                
+                #print(f"Hit at {hit_pos} with normal {self.normal} and is_backface {is_backface}")
+                return Hit(t, hit_pos, self.normal, is_backface)
+            else:
+                return None
+        else:
+            return None
   
             
 class Point(Shape):

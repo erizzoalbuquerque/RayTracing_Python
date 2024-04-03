@@ -32,11 +32,12 @@ class Scene:
            if new_hit is not None:
                               
                if new_hit.distance < nearest_hit_distance:
+                    nearest_hit_distance = new_hit.distance
                     hit_instance = instance
                     hit = new_hit
-
         
         return (hit_instance,hit)
+    
     
     def trace_ray(self,ray) -> Color:
         
@@ -55,8 +56,7 @@ class Scene:
             
             elif type(hit_instance) == ObjectInstance:
                 
-                object_instance : ObjectInstance = hit_instance
-                
+                object_instance : ObjectInstance = hit_instance                
                 color = object_instance.material.eval(self.lights, hit, ray.origin)      
         
         else: # Hit nothing
