@@ -4,6 +4,8 @@ import sys
 
 from RayTracing.ray import Ray,Hit
 
+MIN_DISTANCE_TOLERENCE = 10e-5
+
 class Shape:
     def __init__(self) -> None:
         pass
@@ -43,6 +45,9 @@ class Sphere(Shape):
                     distance = min(t1,t2)
                     is_backface = False
                     
+                if glm.abs(distance) < MIN_DISTANCE_TOLERENCE:
+                    return None
+                    
                 hit_pos = ray.origin + ray.direction*distance 
                 normal = hit_pos - shape_position
                 return Hit( distance, hit_pos, normal, is_backface )
@@ -66,6 +71,9 @@ class Plane(Shape):
                     is_backface = True
                 else:
                     is_backface = False
+                    
+                if (t < MIN_DISTANCE_TOLERENCE):
+                    return None
                 
                 #print(f"Hit at {hit_pos} with normal {self.normal} and is_backface {is_backface}")
                 return Hit(t, hit_pos, self.normal, is_backface)

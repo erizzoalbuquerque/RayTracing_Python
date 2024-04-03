@@ -22,7 +22,7 @@ def CreateScene():
     instances.append( ObjectInstance( glm.vec3(1,0.5,9), Sphere(0.5), PhongMaterial( Color(1,1,1), Color(0,0,1), Color(1,1,1), 10 ) ) )
     instances.append( ObjectInstance( glm.vec3(0,0,10), Sphere(1), PhongMaterial( Color(1,1,1), Color(1,0,0), Color(1,1,1), 10 ) ) )
 
-    scene = Scene(instances)
+    scene = Scene(instances, 0.2)
     
     return scene
 
@@ -30,8 +30,8 @@ def CreateScene():
 if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "../Images"
-    WIDTH = 256
-    HEIGHT = 128
+    WIDTH, HEIGHT = 256, 128
+    #WIDTH, HEIGHT = 640, 360
     
     film = Film(WIDTH,HEIGHT)
     
