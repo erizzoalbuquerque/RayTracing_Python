@@ -15,7 +15,8 @@ def CreateScene():
     instances = []
     
     # LIGHTS
-    instances.append( LightInstance( glm.vec3(0,4,10), Sphere(0.1), PointLight(10) ) )
+    instances.append( LightInstance( glm.vec3(0,4,10), Sphere(0.2), PointLight(10) ) )
+    instances.append( LightInstance( glm.vec3(3,4,9), Sphere(0.1), PointLight(7) ) )
         
     # OBJECTS
     instances.append( ObjectInstance( glm.vec3(0,0,10), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,1,0), Color(0,0,0), 10 ) ) )
@@ -30,10 +31,11 @@ def CreateScene():
 if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "../Images"
-    WIDTH, HEIGHT = 256, 128
-    #WIDTH, HEIGHT = 640, 360
+    FILM_SAMPLE_COUNT = 1
+    WIDTH, HEIGHT = 128, 128
+    #WIDTH, HEIGHT = 360, 360
     
-    film = Film(WIDTH,HEIGHT)
+    film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
     
     
     camera_position = glm.vec3(0,3,0)
