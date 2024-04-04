@@ -61,16 +61,7 @@ class Scene:
                 
                 object_instance : ObjectInstance = hit_instance 
                 
-                # get all visible lights from the hit point
-                visible_lights = []
-                for light_instance in self.light_instances:
-                    light_ray = Ray(hit.position, glm.normalize(light_instance.transform.get_position() - hit.position))
-                    (light_hit_instance, light_hit) = self.compute_intersection(light_ray)
-                    
-                    if light_hit_instance == light_instance:
-                        visible_lights.append(light_instance.light)                
-                               
-                color = object_instance.material.eval(visible_lights, hit, ray.origin , self.ambient_light_intensity)      
+                color = object_instance.material.eval(self, hit, ray.origin , self.ambient_light_intensity)      
         
         else: # Hit nothing
             color = self.get_background_color(ray)
