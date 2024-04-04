@@ -64,7 +64,7 @@ class Scene:
                 # get all visible lights from the hit point
                 visible_lights = []
                 for light_instance in self.light_instances:
-                    light_ray = Ray(hit.position, glm.normalize(light_instance.position - hit.position))
+                    light_ray = Ray(hit.position, glm.normalize(light_instance.transform.get_position() - hit.position))
                     (light_hit_instance, light_hit) = self.compute_intersection(light_ray)
                     
                     if light_hit_instance == light_instance:
