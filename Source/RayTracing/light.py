@@ -51,6 +51,8 @@ class AreaLight(Light):
             self.normal = glm.normalize(glm.cross(e_i, e_j))
             self.area = glm.length(glm.cross(e_i, e_j))
             
+            print("Area Light using ", self.sampling_type, " sampling with ", self.n_samples, " samples")
+            
         
         def get_sample(self) -> list[glm.vec3]:
             import RayTracing.sampling_utils as su
