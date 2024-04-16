@@ -99,5 +99,57 @@ class Point(Shape):
             if dot >= min_dot:
                 distance = (- ray.origin)[0] / ray.direction[0]
                 return Hit( distance, 0, glm.normalize(glm.vec3(1)),False)
+            
+
+class Box(Shape):
+        def __init__(self, bound_min : glm.vec3, bound_max : glm.vec3) -> None:
+            super().__init__()
+            self.bound_min = bound_min
+            self.bound_max = bound_max
+            
+        def intersect(self, ray : Ray) -> Hit:
+            t0 = (self.bound_min - ray.origin) / ray.direction
+            t1 = (self.bound_max - ray.origin) / ray.direction
+            
+            tnear = glm.min(t0,t1)
+            tfar = glm.max(t0,t1)
+            
+            tmin = glm.max(tnear)
+            tmax = glm.min(tfar)
+            
+            if tmin > tmax:
+                return None
+            
+            if tmax < 0:
+                return None
+            
+            if tmin < 0:
+                is_backface = True
+                distance = tmax
+                index = tfar.to_list().index(tmax)               
+            else:
+                is_backface = False
+                distance = tmin
+                index = tnear.to_list().index(tmin)
+               
+            if distance < MIN_DISTANCE_TOLERENCE:
+                return None
+            
+            hit_pos = ray.origin + ray.direction * distance
+            
+            # calculate normal
+            center_point = (self.bound_min + self.bound_max) / 2            
+            delta = hit_pos - center_point
+            aux = glm.vec3(0)
+            aux[index] = 1
+            
+            normal = glm.normalize(glm.dot(aux,delta) * aux)
+            
+            return Hit(distance, hit_pos, normal, is_backface)
+                  
+            
+
+            
+        
         
         

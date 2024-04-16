@@ -6,7 +6,7 @@ from RayTracing.camera import Camera
 from RayTracing.scene import Scene
 from RayTracing.instance import Instance, LightInstance, ObjectInstance
 from RayTracing.transform import Transform
-from RayTracing.shapes import Shape,Sphere,Point,Plane
+from RayTracing.shapes import Shape,Sphere,Point,Plane, Box
 from RayTracing.render import render
 
 import glm
@@ -16,15 +16,17 @@ def CreateScene():
     instances = []
     
     # LIGHTS
-    instances.append( LightInstance( Transform(glm.vec3(0,4,10)), Sphere(1), AreaLight(30, glm.vec3(.8,0,0),glm.vec3(0,0,.4),5, "STRATIFIED") ) )
-    #instances.append( LightInstance( Transform(glm.vec3(0,4,10)), Sphere(0.2), PointLight(10) ) )
+    #instances.append( LightInstance( Transform(glm.vec3(0,4,10)), Sphere(1), AreaLight(30, glm.vec3(.8,0,0),glm.vec3(0,0,.4),5, "STRATIFIED") ) )
+    instances.append( LightInstance( Transform(glm.vec3(3,4,10)), Sphere(0.2), PointLight(10) ) )
     #instances.append( LightInstance( Transform(glm.vec3(3,4,9)), Sphere(0.1), PointLight(7) ) )
     #instances.append( LightInstance( Transform(glm.vec3(-1,3,7)), Sphere(0.1), PointLight(20) ) )
         
     # OBJECTS
-    instances.append( ObjectInstance( Transform(glm.vec3(0,0,10)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,1,0), Color(0,0,0), 10 ) ) )
-    instances.append( ObjectInstance( Transform(glm.vec3(1,0.5,9)), Sphere(0.5), PhongMaterial( Color(1,1,1), Color(0,0,1), Color(1,1,1), 10 ) ) )
-    instances.append( ObjectInstance( Transform(glm.vec3(0,0,10), glm.vec3(0,0,45), glm.vec3(1,3,1)), Sphere(1), PhongMaterial( Color(1,1,1), Color(1,0,0), Color(1,1,1), 10 ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0,0,10)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,1,0), Color(0,0,0), 10 ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(1,0.5,9)), Sphere(0.5), PhongMaterial( Color(1,1,1), Color(0,0,1), Color(1,1,1), 10 ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0,0,10), glm.vec3(0,0,45), glm.vec3(1,3,1)), Sphere(1), PhongMaterial( Color(1,1,1), Color(1,0,0), Color(1,1,1), 10 ) ) )
+    
+    instances.append( ObjectInstance( Transform(glm.vec3(0,0,10),glm.vec3(0,45,0)), Box(glm.vec3(1,-1,-1), glm.vec3(-1,1,1)), PhongMaterial( Color(1,1,1), Color(1,0,0), Color(1,1,1), 10 ) ) )
 
     scene = Scene(instances, 0.2)
     
@@ -34,7 +36,7 @@ def CreateScene():
 if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "../Images"
-    FILM_SAMPLE_COUNT = 4
+    FILM_SAMPLE_COUNT = 1
     #WIDTH, HEIGHT = 128, 128
     WIDTH, HEIGHT = 360, 360
     
