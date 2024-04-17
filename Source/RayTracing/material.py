@@ -14,12 +14,12 @@ class Material:
 
 class PhongMaterial(Material):
     
-    def __init__(self, ambient : Color, diffuse : Color, specular : Color, shininess : float) -> None:
-        #self.ambient = ambient
-        self.ambient = diffuse
+    def __init__(self, diffuse : Color, specular : Color, shininess : float) -> None:
         self.diffuse = diffuse
         self.specular = specular
         self.shininess = shininess
+        
+        self.ambient = self.diffuse
         
     def eval(self, scene, hit: Hit, ray_origin: glm.vec3, ambient_light_intensity : float) -> Color:
         

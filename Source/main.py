@@ -11,26 +11,46 @@ from RayTracing.render import render
 
 import glm
 
-def CreateScene():
+def CreateScene(instances : list[Instance] = []):
     
-    instances = []
-    
-    # LIGHTS
-    #instances.append( LightInstance( Transform(glm.vec3(0,4,10)), Sphere(1), AreaLight(30, glm.vec3(.8,0,0),glm.vec3(0,0,.4),5, "STRATIFIED") ) )
-    instances.append( LightInstance( Transform(glm.vec3(3,4,10)), Sphere(0.2), PointLight(10) ) )
-    #instances.append( LightInstance( Transform(glm.vec3(3,4,9)), Sphere(0.1), PointLight(7) ) )
-    #instances.append( LightInstance( Transform(glm.vec3(-1,3,7)), Sphere(0.1), PointLight(20) ) )
-        
-    # OBJECTS
-    #instances.append( ObjectInstance( Transform(glm.vec3(0,0,10)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,1,0), Color(0,0,0), 10 ) ) )
-    #instances.append( ObjectInstance( Transform(glm.vec3(1,0.5,9)), Sphere(0.5), PhongMaterial( Color(1,1,1), Color(0,0,1), Color(1,1,1), 10 ) ) )
-    #instances.append( ObjectInstance( Transform(glm.vec3(0,0,10), glm.vec3(0,0,45), glm.vec3(1,3,1)), Sphere(1), PhongMaterial( Color(1,1,1), Color(1,0,0), Color(1,1,1), 10 ) ) )
-    
-    instances.append( ObjectInstance( Transform(glm.vec3(0,0,10),glm.vec3(0,45,0)), Box(glm.vec3(1,-1,-1), glm.vec3(-1,1,1)), PhongMaterial( Color(1,1,1), Color(1,0,0), Color(1,1,1), 10 ) ) )
-
-    scene = Scene(instances, 0.2)
+    ambient_light_intensity = 0.2
+    scene = Scene(instances, ambient_light_intensity)
     
     return scene
+
+def CreateObjects():
+                
+    # OBJECTS -----------------------------------------------------
+    # Planes
+    red_plane = ObjectInstance( Transform(glm.vec3(2,0,0)), Plane( glm.vec3(-1,0,0) ), PhongMaterial( Color(1,0,0), Color(0,0,0), 10 ) )
+    green_plane = ObjectInstance( Transform(glm.vec3(-2,0,0)), Plane( glm.vec3(1,0,0) ), PhongMaterial( Color(0,1,0), Color(0,0,0), 10 ) )
+    white_plane = ObjectInstance( Transform(glm.vec3(0,0,2)), Plane( glm.vec3(0,0,-1) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
+    white_ceiling = ObjectInstance( Transform(glm.vec3(0,4,0)), Plane( glm.vec3(0,-1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
+    white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
+    
+    instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    
+    # unit_sphere
+    # instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), PhongMaterial( Color(1,1,0), Color(1,1,1), 10 ) ) )
+    
+    # box
+    instances.append( ObjectInstance( Transform(glm.vec3(0.7,1.25,0.7), glm.vec3(0,45,0)), Box(glm.vec3(1,2.5,1)), PhongMaterial( Color(1,1,1), Color(1,1,1), 10 ) ) )
+    
+    # elipsoide
+    instances.append( ObjectInstance( Transform(glm.vec3(-0.7,0,-0.7), glm.vec3(0,0,45), glm.vec3(1,2,1)), Sphere(0.5), PhongMaterial( Color(1,1,1), Color(1,1,1), 10 ) ) )
+        
+    return instances
+
+def CreateLights():
+    
+    # LIGHTS -----------------------------------------------------
+    point_light = LightInstance( Transform(glm.vec3(0,4,0)), Sphere(0.1), PointLight(5))
+    aux_point_light = LightInstance( Transform(glm.vec3(-1,4,1)), Sphere(0.1), PointLight(3))
+    #area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(2,0.2,1), AreaLight( 10, glm.vec3(2,0,0), glm.vec3(0,0,1), 1, "REGULAR" ) )
+    
+    instances = [point_light,aux_point_light]
+    
+    return instances    
 
 
 if __name__ == '__main__':
@@ -42,13 +62,13 @@ if __name__ == '__main__':
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
     
+    instances = CreateObjects() + CreateLights()
     
-    camera_position = glm.vec3(0,3,0)
-    camera_target = glm.vec3(0,1.5,10)
+    scene = CreateScene(instances)    
     
-    camera = Camera(40, 10, WIDTH/HEIGHT, camera_position, camera_target, glm.vec3(0,1,0))
-    
-    scene = CreateScene()
+    camera_position = glm.vec3(0,2,-5)
+    camera_target = glm.vec3(0,2,0)    
+    camera = Camera(60, 5, WIDTH/HEIGHT, camera_position, camera_target, glm.vec3(0,1,0))
     
     render(film, camera, scene)
 

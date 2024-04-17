@@ -102,12 +102,18 @@ class Point(Shape):
             
 
 class Box(Shape):
-        def __init__(self, bound_min : glm.vec3, bound_max : glm.vec3) -> None:
-            super().__init__()
-            self.bound_min = bound_min
-            self.bound_max = bound_max
+        def __init__(self, size : glm.vec3) -> None:
+            super().__init__()            
+            
+            self.bound_min = -size / 2
+            self.bound_max = size / 2
             
         def intersect(self, ray : Ray) -> Hit:
+            
+            for i in range(3):
+                if ray.direction[i] == 0:
+                    ray.direction[i] = 10e-5
+                        
             t0 = (self.bound_min - ray.origin) / ray.direction
             t1 = (self.bound_max - ray.origin) / ray.direction
             
