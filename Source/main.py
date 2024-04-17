@@ -29,9 +29,10 @@ def CreateObjects():
     white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     
     instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    #instances = [white_floor]
     
     # unit_sphere
-    # instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), PhongMaterial( Color(1,1,0), Color(1,1,1), 10 ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), PhongMaterial( Color(1,1,0), Color(1,1,1), 10 ) ) )
     
     # box
     instances.append( ObjectInstance( Transform(glm.vec3(0.7,1.25,0.7), glm.vec3(0,45,0)), Box(glm.vec3(1,2.5,1)), PhongMaterial( Color(1,1,1), Color(1,1,1), 10 ) ) )
@@ -46,9 +47,10 @@ def CreateLights():
     # LIGHTS -----------------------------------------------------
     point_light = LightInstance( Transform(glm.vec3(0,4,0)), Sphere(0.1), PointLight(5))
     aux_point_light = LightInstance( Transform(glm.vec3(-1,4,1)), Sphere(0.1), PointLight(3))
-    #area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(2,0.2,1), AreaLight( 10, glm.vec3(2,0,0), glm.vec3(0,0,1), 1, "REGULAR" ) )
+    area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(glm.vec3(2.1,0.1,1.1)), AreaLight( 10, glm.vec3(2,0,0), glm.vec3(0,0,1), 4, "REGULAR" ) )
     
-    instances = [point_light,aux_point_light]
+    #instances = [point_light,aux_point_light]
+    instances = [area_light]
     
     return instances    
 
