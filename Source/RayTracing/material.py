@@ -34,3 +34,14 @@ class PhongMaterial(Material):
             color += self.specular * max(0.0, (glm.dot(v, reflection_direction))) ** self.shininess * radiance
                         
         return color
+    
+class DebugMaterial(Material):
+    
+    def __init__(self) -> None:
+        pass
+    
+    def eval(self, lights: list[Light], hit: Hit, ray_origin: glm.vec3, ambient_light_intensity: float) -> Color:
+        
+        color = Color(abs(hit.normal.x), abs(hit.normal.y), abs(hit.normal.z))
+        
+        return color

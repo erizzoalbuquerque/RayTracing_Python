@@ -1,6 +1,6 @@
 from RayTracing.color import Color
 from RayTracing.light import Light, PointLight, AreaLight
-from RayTracing.material import Material, PhongMaterial
+from RayTracing.material import Material, PhongMaterial, DebugMaterial
 from RayTracing.film import Film
 from RayTracing.camera import Camera
 from RayTracing.scene import Scene
@@ -28,14 +28,16 @@ def CreateObjects():
     white_ceiling = ObjectInstance( Transform(glm.vec3(0,4,0)), Plane( glm.vec3(0,-1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     
-    instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
-    #instances = [white_floor]
+    #instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    instances = [white_floor]
     
     # unit_sphere
     #instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), PhongMaterial( Color(1,1,0), Color(1,1,1), 10 ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), DebugMaterial() ) )
     
     # box
-    instances.append( ObjectInstance( Transform(glm.vec3(0.7,1.25,0.7), glm.vec3(0,45,0)), Box(glm.vec3(1,2.5,1)), PhongMaterial( Color(1,1,1), Color(1,1,1), 10 ) ) )
+    instances.append( ObjectInstance( Transform(glm.vec3(0.7,1.25,1.1), glm.vec3(0,45,0)), Box(glm.vec3(1,2.5,1)), PhongMaterial( Color(1,1,1), Color(1,1,1), 10 ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0.7,1.25,0.7), glm.vec3(30,20,0)), Box(glm.vec3(1,1,1)), DebugMaterial() ) )
     
     # elipsoide
     instances.append( ObjectInstance( Transform(glm.vec3(-0.7,0,-0.7), glm.vec3(0,0,45), glm.vec3(1,2,1)), Sphere(0.5), PhongMaterial( Color(1,1,1), Color(1,1,1), 10 ) ) )
@@ -44,13 +46,18 @@ def CreateObjects():
 
 def CreateLights():
     
+    instances = []
+    
     # LIGHTS -----------------------------------------------------
     point_light = LightInstance( Transform(glm.vec3(0,4,0)), Sphere(0.1), PointLight(5))
     aux_point_light = LightInstance( Transform(glm.vec3(-1,4,1)), Sphere(0.1), PointLight(3))
-    area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(glm.vec3(2.1,0.1,1.1)), AreaLight( 10, glm.vec3(2,0,0), glm.vec3(0,0,1), 4, "REGULAR" ) )
+    area_light = LightInstance( Transform(glm.vec3(-1,4,0)), Box(glm.vec3(2.1,0.1,1.1)), AreaLight( 15, glm.vec3(2,0,0), glm.vec3(0,0,1), 4, "STRATIFIED" ) )
+    mini_area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(glm.vec3(0.26,0.1,0.25)), AreaLight( 10, glm.vec3(0.5,0,0), glm.vec3(0,0,0.25), 4, "REGULAR" ) )
     
+    #instances = [point_light]
     #instances = [point_light,aux_point_light]
     instances = [area_light]
+    #instances = [mini_area_light]
     
     return instances    
 
