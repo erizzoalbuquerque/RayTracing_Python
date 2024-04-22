@@ -1,7 +1,7 @@
 import glm
 
 from source.RayTracing.color import Color
-from source.RayTracing.light import PointLight, AreaLight
+from source.RayTracing.light import AreaLight
 from source.RayTracing.material import PhongMaterial
 from source.RayTracing.film import Film
 from source.RayTracing.camera import Camera
