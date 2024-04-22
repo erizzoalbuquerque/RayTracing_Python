@@ -1,9 +1,9 @@
 import sys
 import glm
 
-from RayTracing.ray import Ray,Hit
-from RayTracing.instance import Instance, ObjectInstance, LightInstance
-from RayTracing.color import Color
+from .ray import Ray,Hit
+from .instance import Instance, ObjectInstance, LightInstance
+from .color import Color
 
 class Scene:
     def __init__(self, instances : list[Instance], ambient_light_intensity : float = 0.0) -> None:

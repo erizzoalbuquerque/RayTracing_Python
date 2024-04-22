@@ -2,7 +2,7 @@ from RayTracing.film import Film
 
 if __name__ == '__main__':
     FILE_NAME =  "testing_film.png"
-    FILE_PATH =  "../Images/Test_Film"
+    FILE_PATH =  "../images/Test_Film"
     WIDTH = 256
     HEIGHT = 128 
     

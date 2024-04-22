@@ -33,7 +33,7 @@ def CreateCameraMovement(number_of_points):
 
 if __name__ == '__main__':
     FILE_EXTENSION =  ".png"
-    FILE_PATH =  "../Images/Test_Camera"
+    FILE_PATH =  "../images/Test_Camera"
     WIDTH = 256
     HEIGHT = 128
     NUMBER_OF_POINTS = 12
