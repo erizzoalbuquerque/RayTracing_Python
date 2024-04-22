@@ -1,9 +1,9 @@
 import glm
-from RayTracing.material import Material
-from RayTracing.shapes import Shape
-from RayTracing.ray import Ray, Hit
-from RayTracing.light import Light
-from RayTracing.transform import Transform
+from .material import Material
+from .shapes import Shape
+from .ray import Ray, Hit
+from .light import Light
+from .transform import Transform
 
 class Instance:
     

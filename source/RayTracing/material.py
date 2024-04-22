@@ -1,8 +1,8 @@
 import glm
 
-from RayTracing.color import Color
-from RayTracing.ray import Hit
-from RayTracing.light import Light
+from .color import Color
+from .ray import Hit
+from .light import Light
 
 class Material:
     

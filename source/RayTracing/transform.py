@@ -1,6 +1,6 @@
 import glm
 
-from RayTracing.ray import Ray, Hit
+from .ray import Ray, Hit
 
 class Transform:
     

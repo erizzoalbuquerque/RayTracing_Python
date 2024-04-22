@@ -1,6 +1,6 @@
 import math
 import glm
-from RayTracing.ray import Ray
+from .ray import Ray
 
 class Camera:
     def __init__(self, fov_deg, focus_distance, ratio, eye_position: glm.vec3, center_position : glm.vec3, up_direction : glm.vec3):

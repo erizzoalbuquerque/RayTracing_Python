@@ -16,8 +16,8 @@ class PointLight(Light):
       
     def get_radiance(self, scene, target_position : glm.vec3  ) -> tuple[float,glm.vec3]:
         
-        from RayTracing.ray import Ray
-        from RayTracing.instance import LightInstance
+        from .ray import Ray
+        from .instance import LightInstance
         
         light_direction = glm.normalize(self.position - target_position)
         
@@ -55,7 +55,7 @@ class AreaLight(Light):
             
         
         def get_sample(self) -> list[glm.vec3]:
-            import RayTracing.sampling_utils as su
+            from .sampling_utils import SamplingUtils as su
             
             if (self.sampling_type == "REGULAR"):
                 offsets_i = su.get_regular_sampling(self.n_samples_root_squared)
@@ -95,8 +95,8 @@ class AreaLight(Light):
         
         def sample_radiance(self, scene, target_position : glm.vec3, sample_position : glm.vec3) -> tuple[float,glm.vec3]:
             
-            from RayTracing.ray import Ray
-            from RayTracing.instance import LightInstance
+            from .ray import Ray
+            from .instance import LightInstance
             
             sample_normal = self.normal
             

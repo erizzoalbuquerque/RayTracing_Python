@@ -2,7 +2,7 @@ import glm
 import math
 import sys
 
-from RayTracing.ray import Ray,Hit
+from .ray import Ray,Hit
 
 MIN_DISTANCE_TOLERENCE = 10e-5
 

@@ -1,13 +1,13 @@
-from RayTracing.color import Color
-from RayTracing.light import Light, PointLight, AreaLight
-from RayTracing.material import Material, PhongMaterial, DebugMaterial
-from RayTracing.film import Film
-from RayTracing.camera import Camera
-from RayTracing.scene import Scene
-from RayTracing.instance import Instance, LightInstance, ObjectInstance
-from RayTracing.transform import Transform
-from RayTracing.shapes import Shape,Sphere,Point,Plane, Box
-from RayTracing.render import render
+from source.RayTracing.color import Color
+from source.RayTracing.light import Light, PointLight, AreaLight
+from source.RayTracing.material import Material, PhongMaterial, DebugMaterial
+from source.RayTracing.film import Film
+from source.RayTracing.camera import Camera
+from source.RayTracing.scene import Scene
+from source.RayTracing.instance import Instance, LightInstance, ObjectInstance
+from source.RayTracing.transform import Transform
+from source.RayTracing.shapes import Shape,Sphere,Point,Plane, Box
+from source.RayTracing.render import render
 
 import glm
 
@@ -64,7 +64,7 @@ def CreateLights():
 
 if __name__ == '__main__':
     FILE_NAME =  "output.png"
-    FILE_PATH =  "../Images"
+    FILE_PATH =  "./images"
     FILM_SAMPLE_COUNT = 1
     #WIDTH, HEIGHT = 128, 128
     WIDTH, HEIGHT = 360, 360

@@ -1,7 +1,7 @@
-from RayTracing.film import Film
-from RayTracing.camera import Camera
-from RayTracing.scene import Scene
-from RayTracing.color import Color
+from .film import Film
+from .camera import Camera
+from .scene import Scene
+from .color import Color
 
 from timeit import default_timer as timer
 
