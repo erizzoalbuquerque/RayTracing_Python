@@ -37,3 +37,5 @@ max-line-length = 120
 # Ignore some flake8 errors
 #extend-ignore = E501, F401, F403, F405
 extend-ignore = F401, F403, F405
+
+ignore = W293
