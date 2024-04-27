@@ -70,9 +70,11 @@ class Scene:
 
        
     def get_background_color(self, ray : Ray) -> Color:
-        r = ray.direction.x
-        g = ray.direction.y
-        b = ray.direction.z        
+        #r = ray.direction.x
+        #g = ray.direction.y
+        #b = ray.direction.z        
+        
+        r,g,b, = 0,0,0
         
         return Color(r,g,b)
     
