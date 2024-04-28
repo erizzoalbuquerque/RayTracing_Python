@@ -73,7 +73,7 @@ class AreaLight(Light):
             for offset_i in offsets_i:
                 for offset_j in offsets_j:
                     #offsets.append(self.position + x * self.e_i + y * self.e_j)
-                    offsets.append(self.position + offset_i * self.e_i + offset_j * self.e_j)
+                    offsets.append(self.position + offset_i * self.e_i + offset_j * self.e_j - (0.5 * self.e_i + 0.5 * self.e_j) )
                     
             #print("Offsets: ", offsets)
                     

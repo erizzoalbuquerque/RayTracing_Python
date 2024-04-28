@@ -28,8 +28,8 @@ def CreateObjects():
     white_ceiling = ObjectInstance( Transform(glm.vec3(0,4,0)), Plane( glm.vec3(0,-1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     
-    #instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
-    instances = [white_floor]
+    instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    #instances = [white_floor]
     #instances = []
     
     # unit_sphere
@@ -55,11 +55,12 @@ def CreateLights():
     # LIGHTS -----------------------------------------------------
     point_light = LightInstance( Transform(glm.vec3(0,4,0)), Sphere(0.1), PointLight(3))
     aux_point_light = LightInstance( Transform(glm.vec3(-1,4,1)), Sphere(0.1), PointLight(3))
-    area_light = LightInstance( Transform(glm.vec3(-1,4,0)), Box(glm.vec3(2.1,0.1,1.1)), AreaLight( 15, glm.vec3(2,0,0), glm.vec3(0,0,1), 4, "STRATIFIED" ) )
+    area_light = LightInstance( Transform(glm.vec3(-1,4,0)), Box(glm.vec3(1.5,0.1,0.75)), AreaLight( 10, glm.vec3(1.5,0,0), glm.vec3(0,0,0.75), 5, "STRATIFIED" ) )
+    #area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(glm.vec3(1,0.1,0.5)), AreaLight( 10, glm.vec3(1,0,0), glm.vec3(0,0,0.5), 5, "STRATIFIED" ) )
     
-    instances = [point_light]
+    #instances = [point_light]
     #instances = [point_light,aux_point_light]
-    #instances = [area_light]
+    instances = [area_light]
     
     return instances    
 
@@ -67,7 +68,7 @@ def CreateLights():
 if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "../Images"
-    FILM_SAMPLE_COUNT = 1
+    FILM_SAMPLE_COUNT = 4
     #WIDTH, HEIGHT = 128, 128
     WIDTH, HEIGHT = 480, 480
     
