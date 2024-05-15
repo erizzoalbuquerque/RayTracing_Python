@@ -57,11 +57,11 @@ def CreateLights():
     # LIGHTS -----------------------------------------------------
     point_light = LightInstance( Transform(glm.vec3(0,4,0)), Sphere(0.1), PointLight(3))
     aux_point_light = LightInstance( Transform(glm.vec3(-1,4,1)), Sphere(0.1), PointLight(3))
-    area_light = LightInstance( Transform(glm.vec3(-1,4,0)), Box(glm.vec3(1.5,0.1,0.75)), AreaLight( 10, glm.vec3(1.5,0,0), glm.vec3(0,0,0.75), 5, "STRATIFIED" ) )
+    #area_light = LightInstance( Transform(glm.vec3(-1,4,0)), Box(glm.vec3(1.5,0.1,0.75)), AreaLight( 10, glm.vec3(1.5,0,0), glm.vec3(0,0,0.75), 5, "STRATIFIED" ) )
     
-    #instances = [point_light]
+    instances = [point_light]
     #instances = [point_light,aux_point_light]
-    instances = [area_light]
+    #instances = [area_light]
     
     return instances    
 
@@ -69,7 +69,7 @@ def CreateLights():
 if __name__ == '__main__':
     PROFILE_APP = False
     FILE_NAME =  "output.png"
-    FILE_PATH =  "../Images"
+    FILE_PATH =  "./Images"
     FILM_SAMPLE_COUNT = 1
     #WIDTH, HEIGHT = 128, 128
     WIDTH, HEIGHT = 480, 480

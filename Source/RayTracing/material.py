@@ -6,7 +6,7 @@ from RayTracing.light import Light
 
 class Material:
     
-    def _init_(self):
+    def __init__(self):
         pass
     
     def eval(self, lights: list[Light] , hit : Hit , ray_origin : glm.vec3, ambient_light_intensity : float) -> Color:
