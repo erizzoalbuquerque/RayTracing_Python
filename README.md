@@ -10,7 +10,7 @@
  - Shapes: Spheres, Boxes, Planes
  - Light Types: Point, Area
 
- ![alt text](./Images/example.png "Example")
+ ![Example Image](./Images/example.png)
 
 # How to run
 
