@@ -4,7 +4,7 @@ class Light:
         
     def __init__(self, power : float) -> None:
         self.power = power
-        self.position = glm.vec3(0,0,0)
+        self.world_position = glm.vec3(0,0,0) # Set by LightInstance. Not good design, but works for now.
         
     def get_radiance(self, target_position : glm.vec3 ) -> tuple[float,glm.vec3]:
         pass        
@@ -19,7 +19,7 @@ class PointLight(Light):
         from RayTracing.ray import Ray
         from RayTracing.instance import LightInstance
         
-        light_direction = glm.normalize(self.position - target_position)
+        light_direction = glm.normalize(self.world_position - target_position)
         
         ray = Ray(target_position, light_direction)
         hit_instance,hit = scene.compute_intersection(ray)
@@ -33,7 +33,7 @@ class PointLight(Light):
         if hit_instance.light != self:
             return 0.0, light_direction
         
-        radius = glm.length(self.position - target_position)
+        radius = glm.length(self.world_position - target_position)
         radiance = self.power / radius**2
 
         return radiance, light_direction
@@ -73,7 +73,7 @@ class AreaLight(Light):
             for offset_i in offsets_i:
                 for offset_j in offsets_j:
                     #offsets.append(self.position + x * self.e_i + y * self.e_j)
-                    offsets.append(self.position + offset_i * self.e_i + offset_j * self.e_j - (0.5 * self.e_i + 0.5 * self.e_j) )
+                    offsets.append(self.world_position + offset_i * self.e_i + offset_j * self.e_j - (0.5 * self.e_i + 0.5 * self.e_j) )
                     
             #print("Offsets: ", offsets)
                     

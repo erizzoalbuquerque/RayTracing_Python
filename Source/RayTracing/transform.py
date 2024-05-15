@@ -32,7 +32,6 @@ class Transform:
     
     def inverse_transform_ray(self, ray : Ray) -> Ray:        
         local_origin = self.inverse_transform_point(ray.origin)
-        # new_ray.direction = glm.vec3(self.M_inv * glm.vec4(ray.direction, 0.0))
         local_direction = glm.vec3( glm.normalize(self.M_inv * (glm.vec4(ray.origin + ray.direction, 1.0) - glm.vec4(ray.origin, 1.0))) )
         
         return Ray(local_origin, local_direction)
@@ -48,7 +47,6 @@ class Transform:
         return hit_global
     
     def get_position(self) -> glm.vec3:
-        # return glm.vec3(self.transform_point(glm.vec3(0))
         return glm.vec3(self.M[3])
     
     

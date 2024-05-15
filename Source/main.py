@@ -10,6 +10,8 @@ from RayTracing.shapes import Shape,Sphere,Point,Plane, Box
 from RayTracing.render import render
 
 import glm
+from cProfile import Profile
+from pstats import Stats, SortKey
 
 def CreateScene(instances : list[Instance] = []):
     
@@ -28,8 +30,8 @@ def CreateObjects():
     white_ceiling = ObjectInstance( Transform(glm.vec3(0,4,0)), Plane( glm.vec3(0,-1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PhongMaterial( Color(1,1,1), Color(0,0,0), 10 ) )
     
-    instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
-    #instances = [white_floor]
+    #instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    instances = [white_floor]
     #instances = []
     
     # unit_sphere
@@ -56,7 +58,6 @@ def CreateLights():
     point_light = LightInstance( Transform(glm.vec3(0,4,0)), Sphere(0.1), PointLight(3))
     aux_point_light = LightInstance( Transform(glm.vec3(-1,4,1)), Sphere(0.1), PointLight(3))
     area_light = LightInstance( Transform(glm.vec3(-1,4,0)), Box(glm.vec3(1.5,0.1,0.75)), AreaLight( 10, glm.vec3(1.5,0,0), glm.vec3(0,0,0.75), 5, "STRATIFIED" ) )
-    #area_light = LightInstance( Transform(glm.vec3(0,4,0)), Box(glm.vec3(1,0.1,0.5)), AreaLight( 10, glm.vec3(1,0,0), glm.vec3(0,0,0.5), 5, "STRATIFIED" ) )
     
     #instances = [point_light]
     #instances = [point_light,aux_point_light]
@@ -66,9 +67,10 @@ def CreateLights():
 
 
 if __name__ == '__main__':
+    PROFILE_APP = False
     FILE_NAME =  "output.png"
     FILE_PATH =  "../Images"
-    FILM_SAMPLE_COUNT = 4
+    FILM_SAMPLE_COUNT = 1
     #WIDTH, HEIGHT = 128, 128
     WIDTH, HEIGHT = 480, 480
     
@@ -82,7 +84,17 @@ if __name__ == '__main__':
     camera_target = glm.vec3(0,2,0)    
     camera = Camera(60, 5, WIDTH/HEIGHT, camera_position, camera_target, glm.vec3(0,1,0))
     
-    render(film, camera, scene)
+    if (PROFILE_APP == True):
+        with Profile() as prof:
+            render(film, camera, scene)
+            (
+                Stats(prof)
+                .strip_dirs()
+                .sort_stats(SortKey.TIME)
+                .print_stats()        
+            )
+    else:
+        render(film, camera, scene)
 
     film.image.show()   
     

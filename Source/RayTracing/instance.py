@@ -39,4 +39,4 @@ class LightInstance(Instance):
     def __init__(self, transform : Transform, shape : Shape, light : Light) -> None:
         super().__init__(transform, shape)
         self.light = light
-        light.position = self.transform.get_position()
+        light.world_position = self.transform.get_position()
