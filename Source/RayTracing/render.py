@@ -5,7 +5,7 @@ from RayTracing.color import Color
 
 from timeit import default_timer as timer
 
-def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_paths_per_pixel : int, pt_max_depth : int):
+def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_max_depth : int):
     print("Starting render...")
     print(f"Render Type: {render_type}")
     print(f"film resolution is: {film.width} X {film.height}")
@@ -13,13 +13,17 @@ def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_pa
     
     film_sample_count = film.sample_count
     print(f"Film sample count is {film_sample_count}.")
-    print(f"Path Tracer paths per pixel is {pt_paths_per_pixel}.")
-    print(f"Path Tracer max depth is {pt_max_depth}.")
+    
+    if (render_type == "PATH_TRACER"):
+        print(f"Path Tracer max depth is {pt_max_depth}.")
     
     total_pixels = film.width * film.height
-    pixels_printed = 0
     
+    
+    pixels_printed = 0
+    progress = 0    
     start_time = timer()
+    last_print_time = start_time
     
     for i in range(film.width):
         for j in range(film.height):
@@ -34,23 +38,25 @@ def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_pa
                 if (render_type == "RAY_TRACER"):
                     color += scene.trace_ray(ray)
                 elif (render_type == "PATH_TRACER"):
-                    for l in range(pt_paths_per_pixel):
-                        color += scene.trace_path(ray, pt_max_depth)
-                    color /= pt_paths_per_pixel
+                    color += scene.trace_path(ray, pt_max_depth)
                 else:
                     print("Error: Render type not recognized.")
                     return
-                    
+                
+                # Update progress
+                current_progress = (k + j * film_sample_count + i * film.height * film_sample_count) / (total_pixels * film_sample_count)   * 100
+                current_time = timer()
+                
+                if ( (current_progress % 10 < progress % 10) or ( (current_time - last_print_time) > 30) ):
+                    print_progress(progress)
+                    last_print_time = timer()
+                progress = current_progress
+                               
             color /= film_sample_count
 
             color = (color.r, color.g, color.b)   
             film.set_pixel_value(i,j,color)
-            #print(color)
-            
-            pixels_printed += 1
-            progress = pixels_printed / total_pixels * 100
-            if progress % 10 == 0:
-                print_progress(progress)
+
             
     end_time = timer()
     

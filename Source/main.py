@@ -75,10 +75,8 @@ if __name__ == '__main__':
     FILE_PATH =  "./Images"
     #WIDTH, HEIGHT = 100, 100
     WIDTH, HEIGHT = 480, 480
-    FILM_SAMPLE_COUNT = 1
-    PT_PATHS_PER_PIXEL = 64
+    FILM_SAMPLE_COUNT = 64
     PT_MAX_DEPTH = 4
-
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
     
@@ -92,7 +90,7 @@ if __name__ == '__main__':
     
     if (PROFILE_APP == True):
         with Profile() as prof:
-            render(film, camera, scene, RENDER_TYPE, PT_PATHS_PER_PIXEL, PT_MAX_DEPTH)
+            render(film, camera, scene, RENDER_TYPE, PT_MAX_DEPTH)
             (
                 Stats(prof)
                 .strip_dirs()
@@ -100,7 +98,7 @@ if __name__ == '__main__':
                 .print_stats()        
             )
     else:
-        render(film, camera, scene, RENDER_TYPE, PT_PATHS_PER_PIXEL, PT_MAX_DEPTH)
+        render(film, camera, scene, RENDER_TYPE, PT_MAX_DEPTH)
 
     film.image.show()   
     
