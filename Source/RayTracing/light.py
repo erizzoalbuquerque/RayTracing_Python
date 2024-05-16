@@ -1,4 +1,6 @@
 import glm
+import random
+import math
 
 class Light:
         
@@ -7,7 +9,14 @@ class Light:
         self.world_position = glm.vec3(0,0,0) # Set by LightInstance. Not good design, but works for now.
         
     def get_radiance(self, target_position : glm.vec3 ) -> tuple[float,glm.vec3]:
-        pass        
+        pass
+    
+    def get_sample(self, target_position : glm.vec3 ) -> tuple[glm.vec3, glm.vec3, float]:
+        pass
+    
+    def get_irradiance(self) -> float:
+        pass
+
 
 class PointLight(Light):
     
@@ -38,6 +47,23 @@ class PointLight(Light):
 
         return radiance, light_direction
     
+    
+    def get_sample(self, target_position: glm.vec3) -> tuple[glm.vec3, glm.vec3, float]:
+        super().get_sample(target_position)
+        
+        eps_1 = random.random()
+        eps_2 = random.random()
+        
+        z = 1 - 2 * eps_1
+        x = math.sqrt(1 - z**2) * math.cos(2 * math.pi * eps_2)
+        y = math.sqrt(1 - z**2) * math.sin(2 * math.pi * eps_2)
+
+        
+        return self.world_position, glm.vec3(x,y,z), 1/(4*math.pi)
+    
+    def get_irradiance(self) -> float:
+        return self.power / (4 * math.pi)
+    
 class AreaLight(Light):
         
         def __init__(self, power : float, e_i : glm.vec3, e_j : glm.vec3, n_samples_root_squared : int , sampling_type : str) -> None:
@@ -54,7 +80,7 @@ class AreaLight(Light):
             print("Area Light using ", self.sampling_type, " sampling with ", self.n_samples, " samples")
             
         
-        def get_sample(self) -> list[glm.vec3]:
+        def generate_samples(self) -> list[glm.vec3]:
             import RayTracing.sampling_utils as su
             
             if (self.sampling_type == "REGULAR"):
@@ -84,7 +110,7 @@ class AreaLight(Light):
             
             radiance_vector = glm.vec3(0,0,0)
             
-            samples = self.get_sample()
+            samples = self.generate_samples()
             
             for sample in samples:
                 radiance, light_vector = self.sample_radiance(scene, target_position , sample)
@@ -120,3 +146,17 @@ class AreaLight(Light):
             radiance = (self.power / self.area * max(0, glm.dot(-light_direction,sample_normal)) / radius**2) * (self.area / self.n_samples) 
     
             return radiance, light_direction
+        
+        
+        def get_sample(self, target_position: glm.vec3) -> tuple[glm.vec3, glm.vec3, float]:
+            super().get_sample(target_position)
+
+            eps_1 = random.random()
+            eps_2 = random.random()
+            
+            sample_position = self.world_position + eps_1 * self.e_i + eps_2 * self.e_j - (0.5 * self.e_i + 0.5 * self.e_j)
+
+            return sample_position, self.normal, 1/self.area
+        
+        def get_irradiance(self) -> float:
+            return self.power / self.area
