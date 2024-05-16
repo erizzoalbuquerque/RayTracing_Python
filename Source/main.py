@@ -32,6 +32,7 @@ def CreateObjects():
     white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PTDiffuseMaterial( Color(1,1,1) ) )
     
     instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    #instances = [red_plane, green_plane, white_floor]
     #instances = [white_floor]
     #instances = []
     
@@ -72,8 +73,8 @@ if __name__ == '__main__':
     PROFILE_APP = False
     FILE_NAME =  "output.png"
     FILE_PATH =  "./Images"
-    WIDTH, HEIGHT = 120, 120
-    #WIDTH, HEIGHT = 200, 200
+    #WIDTH, HEIGHT = 100, 100
+    WIDTH, HEIGHT = 480, 480
     FILM_SAMPLE_COUNT = 1
     PT_PATHS_PER_PIXEL = 64
     PT_MAX_DEPTH = 4

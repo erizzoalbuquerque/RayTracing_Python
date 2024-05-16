@@ -176,4 +176,4 @@ class Scene:
         t = glm.cross(b,n)
         M = glm.mat3(t,b,n)
         
-        return glm.normalize(M * w_i_h - p) 
+        return glm.normalize(M * w_i_h ) 
