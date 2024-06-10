@@ -75,7 +75,7 @@ if __name__ == '__main__':
     FILE_PATH =  "./Images"
     #WIDTH, HEIGHT = 100, 100
     WIDTH, HEIGHT = 480, 480
-    FILM_SAMPLE_COUNT = 64
+    FILM_SAMPLE_COUNT = 16
     PT_MAX_DEPTH = 4
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
