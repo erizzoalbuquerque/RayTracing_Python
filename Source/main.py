@@ -16,7 +16,7 @@ from RayTracing.render import render
 
 def CreateScene(instances : list[Instance] = []):
     
-    ambient_light_intensity = 0
+    ambient_light_intensity = 0.5
     scene = Scene(instances, ambient_light_intensity)
     
     return scene
@@ -31,13 +31,14 @@ def CreateObjects():
     white_ceiling = ObjectInstance( Transform(glm.vec3(0,4,0)), Plane( glm.vec3(0,-1,0) ), PTDiffuseMaterial( Color(1,1,1)) )
     white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PTDiffuseMaterial( Color(1,1,1) ) )
     
-    instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
+    #instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
     #instances = [red_plane, green_plane, white_floor]
-    #instances = [white_floor]
+    instances = [white_floor]
     #instances = []
     
     # unit_sphere
-    instances.append( ObjectInstance( Transform(glm.vec3(0,1.5,0)), Sphere(0.5), PTDiffuseMaterial( Color(1,1,0) ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0,1.5,0)), Sphere(0.5), PTDiffuseMaterial( Color(1,1,0) ) ) )
+    instances.append( ObjectInstance( Transform(glm.vec3(0,0.5,0)), Sphere(0.5), PTDiffuseMaterial( Color(1,0,0) ) ) )
     #instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), DebugMaterial() ) )
     
     # box
@@ -63,7 +64,7 @@ def CreateLights():
     
     #instances = [point_light]
     #instances = [point_light,aux_point_light]
-    instances = [area_light]
+    #instances = [area_light]
     
     return instances    
 
@@ -74,9 +75,9 @@ if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "./Images"
     #WIDTH, HEIGHT = 100, 100
-    WIDTH, HEIGHT = 480, 480
+    WIDTH, HEIGHT = 200, 200
     FILM_SAMPLE_COUNT = 16
-    PT_MAX_DEPTH = 4
+    PT_MAX_DEPTH = 3
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
     
