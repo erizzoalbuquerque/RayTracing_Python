@@ -145,8 +145,11 @@ class Scene:
         
         (hit_instance, hit) = self.compute_intersection(ray)
         
-        if (hit_instance is None):
-            return self.ambient_light_power * max( 0, glm.dot(n, w_i) )  * max( 0, glm.dot(n_s,-w_i) )  / (lpdf * pdf)
+        if (light_instance is None):
+            if (hit_instance is None):
+                return self.ambient_light_power * max( 0, glm.dot(n, w_i) )  / (lpdf * pdf)
+            else:
+                return 0
         
         if (hit_instance != light_instance):
             return 0
@@ -161,6 +164,13 @@ class Scene:
     def sample_light(self) -> tuple[LightInstance, float]:
         '''Sample a light randomly based on its power'''
         
+        #random_value = random.randint(0, len(self.lights))
+        #
+        #if random_value == len(self.lights):
+        #    return None, 1/(len(self.lights)+1)
+        #else:
+        #    return self.light_instances[random_value], 1/(len(self.lights)+1)            
+                
         total_power = sum(light.power for light in self.lights) + self.ambient_light_power
         if (total_power == 0):
             return None, 0

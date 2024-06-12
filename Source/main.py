@@ -74,9 +74,9 @@ if __name__ == '__main__':
     PROFILE_APP = False
     FILE_NAME =  "output.png"
     FILE_PATH =  "./Images"
-    #WIDTH, HEIGHT = 100, 100
-    WIDTH, HEIGHT = 200, 200
-    FILM_SAMPLE_COUNT = 16
+    #WIDTH, HEIGHT = 120, 120
+    WIDTH, HEIGHT = 360, 360
+    FILM_SAMPLE_COUNT = 200
     PT_MAX_DEPTH = 3
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
