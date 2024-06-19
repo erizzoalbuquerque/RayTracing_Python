@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 
 def denoise_image(path, filename):
     
@@ -21,4 +22,10 @@ def denoise_image(path, filename):
         
     print("Denoised image created.")
     
-denoise_image("./Images","output.png")
+
+start_time = time.time()
+denoise_image("./Images", "output.png")
+end_time = time.time()
+
+execution_time = end_time - start_time
+print(f"Execution time: {execution_time} seconds")
