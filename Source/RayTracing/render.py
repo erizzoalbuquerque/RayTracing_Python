@@ -10,6 +10,7 @@ def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_ma
     print(f"Render Type: {render_type}")
     print(f"film resolution is: {film.width} X {film.height}")
     print(f"Scene has {len(scene.instances)} instances.")
+    print(f"Ambient light is {scene.ambient_light_power}.")
     
     film_sample_count = film.sample_count
     print(f"Film sample count is {film_sample_count}.")
