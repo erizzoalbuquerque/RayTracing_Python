@@ -130,14 +130,14 @@ class Scene:
                 
                 Le, w_i_m, geometric_factor, m_pdf, light_instance = self.get_light_from_material_sampling(p, n, -current_ray.direction, material)
                 
-                if (light_instance is not None):
+                if (light_instance is not None and geometric_factor != 0):
                     l_pdf = (light_instance.light.power / sum(light.power for light in self.lights)) * light_instance.light.get_sample_pdf()
                     mis_weight = self.get_mis_weight(m_pdf * geometric_factor, l_pdf )
                     brdf =  material.brdf(n, w_i_m, -current_ray.direction)
                     temp = beta * Le * brdf * mis_weight / m_pdf 
                     #if temp.r + temp.g + temp.b  > 0.5:
-                        #print ("beta: ", beta, "Le: ", Le, "geometric_factor: ", geometric_factor, "m_pdf: ", m_pdf, "l_pdf: ", l_pdf, "mis_weight: ", mis_weight, "brdf: ", brdf, "temp: ", temp)
-                    L += beta * Le * brdf * mis_weight / m_pdf           
+                    #    print ("beta: ", beta, "Le: ", Le, "geometric_factor: ", geometric_factor, "m_pdf: ", m_pdf, "l_pdf: ", l_pdf, "mis_weight: ", mis_weight, "brdf: ", brdf, "temp: ", temp)
+                    L += beta * Le * brdf * mis_weight / (m_pdf * geometric_factor)        
                 
                 # Sample new direction and update variables
                 w_i, pdf = material.get_sample(n, -current_ray.direction)

@@ -4,7 +4,7 @@ from pstats import Stats, SortKey
 
 from RayTracing.color import Color
 from RayTracing.light import Light, PointLight, AreaLight
-from RayTracing.material import Material, PhongMaterial, DebugMaterial, PTDiffuseMaterial
+from RayTracing.material import Material, PhongMaterial, DebugMaterial, PTDiffuseMaterial, PTReflexiveMaterial
 from RayTracing.film import Film
 from RayTracing.camera import Camera
 from RayTracing.scene import Scene
@@ -29,7 +29,7 @@ def CreateObjects():
     green_plane = ObjectInstance( Transform(glm.vec3(-2,0,0)), Plane( glm.vec3(1,0,0) ), PTDiffuseMaterial( Color(0,1,0) ) )
     white_plane = ObjectInstance( Transform(glm.vec3(0,0,2)), Plane( glm.vec3(0,0,-1) ), PTDiffuseMaterial( Color(1,1,1)) )
     white_ceiling = ObjectInstance( Transform(glm.vec3(0,4,0)), Plane( glm.vec3(0,-1,0) ), PTDiffuseMaterial( Color(1,1,1)) )
-    white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PTDiffuseMaterial( Color(1,1,1) ) )
+    white_floor = ObjectInstance( Transform(glm.vec3(0,0,0)), Plane( glm.vec3(0,1,0) ), PTReflexiveMaterial( Color(1,1,1) ) )
     
     instances = [red_plane, green_plane, white_plane, white_ceiling, white_floor]
     #instances = [red_plane, green_plane, white_floor]
@@ -38,6 +38,7 @@ def CreateObjects():
     
     # unit_sphere
     instances.append( ObjectInstance( Transform(glm.vec3(0,1.5,0)), Sphere(0.5), PTDiffuseMaterial( Color(1,1,0) ) ) )
+    #instances.append( ObjectInstance( Transform(glm.vec3(0,1.5,0)), Sphere(0.5), PTReflexiveMaterial( ) ) )
     #instances.append( ObjectInstance( Transform(glm.vec3(0,0.5,0)), Sphere(0.5), PTDiffuseMaterial( Color(1,0,0) ) ) )
     #instances.append( ObjectInstance( Transform(glm.vec3(0,2,0)), Sphere(0.5), DebugMaterial() ) )
     

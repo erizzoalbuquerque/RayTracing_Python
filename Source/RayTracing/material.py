@@ -88,7 +88,29 @@ class PTDiffuseMaterial(Material):
     def get_sample_pdf(self, n: glm.vec3, w_i: glm.vec3) -> float:
         return random_cosine_hemisphere_pdf(w_i, n)
     
+
+class PTReflexiveMaterial(Material):
     
+    def __init__(self) -> None:
+        pass
+        
+    def brdf(self, n : glm.vec3, w_i : glm.vec3, w_o : glm.vec3) -> Color:
+        reflection_direction = glm.reflect(-w_o, n)
+        if (glm.dot(reflection_direction,w_i) > 0.9):
+            return Color(1,1,1)
+        else:
+            return Color(0,0,0)
+        
+        #return Color(1,1,1)
+    
+    def get_sample(self, n: glm.vec3, w_o: glm.vec3) -> tuple[glm.vec3, float]:
+        
+        w_i = glm.reflect(-w_o, n)
+                        
+        return w_i, 1
+    
+    def get_sample_pdf(self, n: glm.vec3, w_i: glm.vec3) -> float:
+        return 1
 
 
 def random_cosine_hemisphere(n : glm.vec3) -> glm.vec3:
