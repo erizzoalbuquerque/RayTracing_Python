@@ -32,4 +32,7 @@ class Color:
             return Color(self.r / other, self.g / other, self.b / other)
         else:
             raise TypeError(f"{type(other)} is unsupported operand type for division")
+        
+    def __str__(self) -> str:
+        return f"Color({self.r},{self.g},{self.b})"
     

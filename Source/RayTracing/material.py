@@ -77,8 +77,11 @@ class PTDiffuseMaterial(Material):
         return self.albedo / math.pi
     
     def get_sample(self, n: glm.vec3, w_o: glm.vec3) -> tuple[glm.vec3, float]:
-        w_i = random_cosine_hemisphere(n)
-        pdf = random_cosine_hemisphere_pdf(w_i, n)
+        
+        pdf = 0
+        while (pdf < 0.005):        
+            w_i = random_cosine_hemisphere(n)
+            pdf = random_cosine_hemisphere_pdf(w_i, n)
                 
         return w_i, pdf
     
@@ -120,5 +123,5 @@ def hemisphere_to_global( n : glm.vec3, w_i_h : glm.vec3):
         return glm.normalize(M * w_i_h )
     
 def random_cosine_hemisphere_pdf(w_i : glm.vec3 , n : glm.vec3) -> float:
-    
-    return glm.dot(n, w_i) / math.pi
+     
+    return glm.dot(glm.normalize(n), glm.normalize(w_i)) / math.pi

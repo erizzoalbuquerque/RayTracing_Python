@@ -113,30 +113,62 @@ class Scene:
             elif type(hit_instance) == ObjectInstance:
                 
                 material = hit_instance.material
-                
-                # MIS - Sample Direct Light Contribution               
-                
                 p = hit.position
                 n = hit.normal
                 
+                # MIS - Sample Direct Light Contribution ----------------------               
                 Le, w_i_l, geometric_factor, l_pdf = self.get_light_radiance(p,n)
                 
-                m_pdf = material.get_sample_pdf(n, -current_ray.direction)
-                #mis_weight = self.get_mis_weight(l_pdf, m_pdf * geometric_factor)
-                mis_weight = 1
+                m_pdf = material.get_sample_pdf(n, w_i_l)
+                mis_weight = self.get_mis_weight(l_pdf, m_pdf * geometric_factor)
                 
                 brdf =  material.brdf(n, w_i_l, -current_ray.direction)
                 
-                L += beta * Le * brdf * mis_weight / l_pdf
+                L += beta * Le * brdf * mis_weight / l_pdf 
                 
+                # MIS - Sample Material Contribution ---------------------- 
+                
+                Le, w_i_m, geometric_factor, m_pdf, light_instance = self.get_light_from_material_sampling(p, n, -current_ray.direction, material)
+                
+                if (light_instance is not None):
+                    l_pdf = (light_instance.light.power / sum(light.power for light in self.lights)) * light_instance.light.get_sample_pdf()
+                    mis_weight = self.get_mis_weight(m_pdf * geometric_factor, l_pdf )
+                    brdf =  material.brdf(n, w_i_m, -current_ray.direction)
+                    temp = beta * Le * brdf * mis_weight / m_pdf 
+                    #if temp.r + temp.g + temp.b  > 0.5:
+                        #print ("beta: ", beta, "Le: ", Le, "geometric_factor: ", geometric_factor, "m_pdf: ", m_pdf, "l_pdf: ", l_pdf, "mis_weight: ", mis_weight, "brdf: ", brdf, "temp: ", temp)
+                    L += beta * Le * brdf * mis_weight / m_pdf           
+                
+                # Sample new direction and update variables
                 w_i, pdf = material.get_sample(n, -current_ray.direction)
                 
-                # update variables for next iteration
                 beta *= ( material.brdf(n, w_i_l, -current_ray.direction) * max(0,glm.dot(n,w_i)) ) / pdf                
                 current_ray = Ray(p, w_i)
                 
         return L
     
+   
+    def get_light_from_material_sampling(self, p : glm.vec3, n : glm.vec3, w_o : glm.vec3, material) -> tuple[float, glm.vec3, float, float, LightInstance]:
+        w_i_m, m_pdf = material.get_sample(n, w_o)
+        
+        material_ray = Ray(p, w_i_m)                
+        (hit_instance, hit) = self.compute_intersection(material_ray)
+        
+        if (hit_instance is None): # missed
+            return 0, w_i_m, 0, m_pdf, None
+        
+        if type(hit_instance) is LightInstance: # hit a light
+            s = hit.position
+            n_s = hit_instance.light.normal
+            geometric_factor = self.get_geometric_factor(p, s, n_s)
+            Le = hit_instance.light.get_irradiance() * max( 0, glm.dot(n, w_i_m) ) * geometric_factor 
+            
+            return Le, w_i_m, geometric_factor, m_pdf, hit_instance
+        else: # hit an object
+            geometric_factor = self.get_geometric_factor(p, hit.position, hit.normal)
+            return 0, w_i_m, geometric_factor, m_pdf, None
+               
+        
     def get_light_radiance(self, p : glm.vec3, n : glm.vec3) -> tuple[float, glm.vec3, float, float]:
         
         light_instance, lpdf = self.sample_light()
@@ -210,7 +242,7 @@ class Scene:
     def get_geometric_factor(self, p : glm.vec3, s : glm.vec3, n_s : glm.vec3) -> float:
         d = glm.length(s - p)
         w_i = glm.normalize(s - p)
-        return max( 0, glm.dot(n_s, -w_i) ) / d**2
+        return max( 0, glm.dot(n_s, -w_i) ) / ((d**2))
     
     def get_mis_weight(self, main_pdf : float, other_pdf : float) -> float:
         # using balance heuristic
