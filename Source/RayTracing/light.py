@@ -14,6 +14,9 @@ class Light:
     def get_sample(self, target_position : glm.vec3 ) -> tuple[glm.vec3, glm.vec3, float]:
         pass
     
+    def get_sample_pdf(self, target_position : glm.vec3 ) -> float :
+        pass
+    
     def get_irradiance(self) -> float:
         pass
 
@@ -60,6 +63,9 @@ class PointLight(Light):
 
         
         return self.world_position, glm.vec3(x,y,z), 1/(4*math.pi)
+    
+    def get_sample_pdf(self, target_position: glm.vec3) -> float:
+        return 1/(4*math.pi)
     
     def get_irradiance(self) -> float:
         return self.power / (4 * math.pi)
@@ -157,6 +163,9 @@ class AreaLight(Light):
             sample_position = self.world_position + eps_1 * self.e_i + eps_2 * self.e_j - (0.5 * self.e_i + 0.5 * self.e_j)
 
             return sample_position, self.normal, 1/self.area
+        
+        def get_sample_pdf(self, target_position: glm.vec3) -> float:
+            return 1/self.area
         
         def get_irradiance(self) -> float:
             return self.power / self.area

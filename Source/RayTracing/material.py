@@ -14,22 +14,10 @@ class Material:
     def eval(self, scene, hit: Hit, ray_origin: glm.vec3, ambient_light_intensity : float) -> Color:
         pass
     
-    def get_sample(self) -> tuple[glm.vec3, float]:
-        
-        eps_1 = random.random()
-        eps_2 = random.random()
-        
-        w_i_h = glm.vec3(
-            math.sqrt(eps_1) * math.cos(2 * math.pi * eps_2),
-            math.sqrt(eps_1) * math.sin(2 * math.pi * eps_2),
-            math.sqrt(1 - eps_1)
-        )
-        
-        pdf = math.sqrt( 1 - eps_1 ) / math.pi
-        
-        return w_i_h, pdf
+    def get_sample(self, n : glm.vec3, w_o : glm.vec3) -> tuple[glm.vec3, float]:
+        pass 
     
-    def brdf(self):
+    def brdf(self, n : glm.vec3, w_i : glm.vec3, w_o : glm.vec3) -> Color:
         return Color(1,0,1) # Not implemented pink color
 
 class PhongMaterial(Material):
@@ -82,5 +70,49 @@ class PTDiffuseMaterial(Material):
         
         return color
     
-    def brdf(self):
+    def brdf(self, n : glm.vec3, w_i : glm.vec3, w_o : glm.vec3) -> Color:
         return self.albedo / math.pi
+    
+    def get_sample(self, n: glm.vec3, w_o: glm.vec3) -> tuple[glm.vec3, float]:
+        w_i = random_cosine_hemisphere(n)
+        pdf = random_cosine_hemisphere_pdf(w_i, n)
+                
+        return w_i, pdf
+    
+    
+
+
+def random_cosine_hemisphere(n : glm.vec3) -> glm.vec3:
+        
+        eps_1 = random.random()
+        eps_2 = random.random()
+        
+        w_i_h = glm.vec3(
+            math.sqrt(eps_1) * math.cos(2 * math.pi * eps_2),
+            math.sqrt(eps_1) * math.sin(2 * math.pi * eps_2),
+            math.sqrt(1 - eps_1)
+        )
+        
+        t = glm.vec3(1,0,0)
+        
+        w_i = hemisphere_to_global( n, w_i_h)
+        
+        return w_i
+
+
+def hemisphere_to_global( n : glm.vec3, w_i_h : glm.vec3):
+        
+        t = glm.vec3(1,0,0)
+        
+        if glm.abs(glm.dot(t,n)) > 0.9:
+            t = glm.vec3(0,1,0)
+            
+        b = glm.normalize(glm.cross(n,t))
+        t = glm.cross(b,n)
+        M = glm.mat3(t,b,n)
+        
+        return glm.normalize(M * w_i_h )
+    
+def random_cosine_hemisphere_pdf(w_i : glm.vec3 , n : glm.vec3) -> float:
+    
+    return glm.dot(n, w_i) / math.pi

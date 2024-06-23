@@ -106,32 +106,36 @@ class Scene:
                 # If we hit a light, we return the power of the light
                 if (i == 1):
                     return light.power * Color(1,1,1)
-                # If we hit a light after the first hit, we stop. Because we already estimated direct light in the previous iteration 
+                # If we hit a light after the first hit, we stop, because we already estimated direct light in the previous iteration 
                 else:
                     break
                 
             elif type(hit_instance) == ObjectInstance:
                 
-                # Calculate direct light contribution
                 material = hit_instance.material
+                
+                # MIS - Sample Direct Light Contribution               
                 
                 p = hit.position
                 n = hit.normal
                 
-                Le = self.get_light_radiance(p,n)
-                L += (Le * material.brdf()) * beta
+                Le, s, n_s = self.get_light_radiance(p,n)
+                w_i_l = glm.normalize(s - p)
+                geometric_factor = self.get_geometric_factor(p, n, s, n_s)
                 
-                w_i_h, pdf = material.get_sample()
+                brdf =  material.brdf(n, w_i_l, -current_ray.direction)
                 
-                w_i = self.hemisphere_to_global(p, n, w_i_h)
+                L += (Le * brdf) * beta
+                
+                w_i, pdf = material.get_sample(n, -current_ray.direction)
                 
                 # update variables for next iteration
-                beta *= ( material.brdf() * max(0,glm.dot(n,w_i)) ) / pdf                
+                beta *= ( material.brdf(n, w_i_l, -current_ray.direction) * max(0,glm.dot(n,w_i)) ) / pdf                
                 current_ray = Ray(p, w_i)
                 
         return L
     
-    def get_light_radiance(self, p, n):
+    def get_light_radiance(self, p : glm.vec3, n : glm.vec3) -> tuple[float, glm.vec3, glm.vec3]:
         
         light_instance, lpdf = self.sample_light()
         
@@ -147,18 +151,18 @@ class Scene:
         
         if (light_instance is None):
             if (hit_instance is None):
-                return self.ambient_light_power * max( 0, glm.dot(n, w_i) )  / (lpdf * pdf)
+                return self.ambient_light_power * max( 0, glm.dot(n, w_i) )  / (lpdf * pdf), s , n_s
             else:
-                return 0
+                return 0 , glm.vec3(0,0,0), glm.vec3(0,0,0)
         
         if (hit_instance != light_instance):
-            return 0
+            return 0 , glm.vec3(0,0,0), glm.vec3(0,0,0)
         
         d = glm.length(s - p)
         
         irradiance = light_instance.light.get_irradiance()
         
-        return ( irradiance * max( 0, glm.dot(n, w_i) ) * max( 0, glm.dot(n_s,-w_i) ) ) / ( d**2 * lpdf * pdf )
+        return ( irradiance * max( 0, glm.dot(n, w_i) ) * max( 0, glm.dot(n_s,-w_i) ) ) / ( d**2 * lpdf * pdf ), s, n_s
     
     
     def sample_light(self) -> tuple[LightInstance, float]:
@@ -185,18 +189,6 @@ class Scene:
         
         return None, self.ambient_light_power / total_power
     
-    def hemisphere_to_global(self, p : glm.vec3, n : glm.vec3, w_i_h : glm.vec3):
-        
-        t = glm.vec3(1,0,0)
-        
-        if glm.abs(glm.dot(t,n)) > 0.9:
-            t = glm.vec3(0,1,0)
-            
-        b = glm.normalize(glm.cross(n,t))
-        t = glm.cross(b,n)
-        M = glm.mat3(t,b,n)
-        
-        return glm.normalize(M * w_i_h )
     
     def sample_ambient_light(self):
         eps_1 = random.random()
@@ -207,5 +199,11 @@ class Scene:
         y = math.sqrt(1 - z**2) * math.sin(2 * math.pi * eps_2)
 
         
-        return glm.vec3(x,y,z), glm.normalize(-glm.vec3(x,y,z)), 1/(4*math.pi)
+        return glm.vec3(x,y,z), glm.normalize(-glm.vec3(x,y,z)), 1/(4*math.pi) 
+    
+    
+    def get_geometric_factor(self, p : glm.vec3, n : glm.vec3, s : glm.vec3, n_s : glm.vec3) -> float:
+        d = glm.length(s - p)
+        w_i = glm.normalize(s - p)
+        return max( 0, glm.dot(n, w_i) ) * max( 0, glm.dot(n_s, -w_i) ) / d**2
     
