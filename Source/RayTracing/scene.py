@@ -121,9 +121,13 @@ class Scene:
                 
                 Le, w_i_l, geometric_factor, l_pdf = self.get_light_radiance(p,n)
                 
+                m_pdf = material.get_sample_pdf(n, -current_ray.direction)
+                #mis_weight = self.get_mis_weight(l_pdf, m_pdf * geometric_factor)
+                mis_weight = 1
+                
                 brdf =  material.brdf(n, w_i_l, -current_ray.direction)
                 
-                L += beta * Le * brdf / l_pdf
+                L += beta * Le * brdf * mis_weight / l_pdf
                 
                 w_i, pdf = material.get_sample(n, -current_ray.direction)
                 
@@ -156,14 +160,14 @@ class Scene:
         
         # Regular light ----------------------
         
-        geometric_factor = self.get_geometric_factor(p, n, s, n_s)
+        geometric_factor = self.get_geometric_factor(p, s, n_s)
         
         if (hit_instance != light_instance):
             return 0 , w_i, geometric_factor, lpdf * pdf
         
         irradiance = light_instance.light.get_irradiance()
         
-        return ( irradiance * geometric_factor ), w_i, geometric_factor, lpdf * pdf
+        return ( irradiance * max( 0, glm.dot(n, w_i) ) * geometric_factor ), w_i, geometric_factor, lpdf * pdf
     
     
     def sample_light(self) -> tuple[LightInstance, float]:
@@ -203,8 +207,12 @@ class Scene:
         return glm.vec3(x,y,z), glm.normalize(-glm.vec3(x,y,z)), 1/(4*math.pi) 
     
     
-    def get_geometric_factor(self, p : glm.vec3, n : glm.vec3, s : glm.vec3, n_s : glm.vec3) -> float:
+    def get_geometric_factor(self, p : glm.vec3, s : glm.vec3, n_s : glm.vec3) -> float:
         d = glm.length(s - p)
         w_i = glm.normalize(s - p)
-        return max( 0, glm.dot(n, w_i) ) * max( 0, glm.dot(n_s, -w_i) ) / d**2
+        return max( 0, glm.dot(n_s, -w_i) ) / d**2
+    
+    def get_mis_weight(self, main_pdf : float, other_pdf : float) -> float:
+        # using balance heuristic
+        return main_pdf / (main_pdf + other_pdf)
     
