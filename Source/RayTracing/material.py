@@ -19,6 +19,9 @@ class Material:
     
     def brdf(self, n : glm.vec3, w_i : glm.vec3, w_o : glm.vec3) -> Color:
         return Color(1,0,1) # Not implemented pink color
+    
+    def get_sample_pdf(self, n : glm.vec3, w_i : glm.vec3) -> float:
+        pass
 
 class PhongMaterial(Material):
     
@@ -78,6 +81,9 @@ class PTDiffuseMaterial(Material):
         pdf = random_cosine_hemisphere_pdf(w_i, n)
                 
         return w_i, pdf
+    
+    def get_sample_pdf(self, n: glm.vec3, w_i: glm.vec3) -> float:
+        return random_cosine_hemisphere_pdf(w_i, n)
     
     
 

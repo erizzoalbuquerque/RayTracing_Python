@@ -119,13 +119,11 @@ class Scene:
                 p = hit.position
                 n = hit.normal
                 
-                Le, s, n_s = self.get_light_radiance(p,n)
-                w_i_l = glm.normalize(s - p)
-                geometric_factor = self.get_geometric_factor(p, n, s, n_s)
+                Le, w_i_l, geometric_factor, l_pdf = self.get_light_radiance(p,n)
                 
                 brdf =  material.brdf(n, w_i_l, -current_ray.direction)
                 
-                L += (Le * brdf) * beta
+                L += beta * Le * brdf / l_pdf
                 
                 w_i, pdf = material.get_sample(n, -current_ray.direction)
                 
@@ -135,7 +133,7 @@ class Scene:
                 
         return L
     
-    def get_light_radiance(self, p : glm.vec3, n : glm.vec3) -> tuple[float, glm.vec3, glm.vec3]:
+    def get_light_radiance(self, p : glm.vec3, n : glm.vec3) -> tuple[float, glm.vec3, float, float]:
         
         light_instance, lpdf = self.sample_light()
         
@@ -149,20 +147,23 @@ class Scene:
         
         (hit_instance, hit) = self.compute_intersection(ray)
         
-        if (light_instance is None):
+        # Ambient light ----------------------
+        if (light_instance is None): 
             if (hit_instance is None):
-                return self.ambient_light_power * max( 0, glm.dot(n, w_i) )  / (lpdf * pdf), s , n_s
+                return self.ambient_light_power * max( 0, glm.dot(n, w_i) ), w_i , 0, lpdf * pdf
             else:
-                return 0 , glm.vec3(0,0,0), glm.vec3(0,0,0)
+                return 0 , w_i, 0, lpdf * pdf
+        
+        # Regular light ----------------------
+        
+        geometric_factor = self.get_geometric_factor(p, n, s, n_s)
         
         if (hit_instance != light_instance):
-            return 0 , glm.vec3(0,0,0), glm.vec3(0,0,0)
-        
-        d = glm.length(s - p)
+            return 0 , w_i, geometric_factor, lpdf * pdf
         
         irradiance = light_instance.light.get_irradiance()
         
-        return ( irradiance * max( 0, glm.dot(n, w_i) ) * max( 0, glm.dot(n_s,-w_i) ) ) / ( d**2 * lpdf * pdf ), s, n_s
+        return ( irradiance * geometric_factor ), w_i, geometric_factor, lpdf * pdf
     
     
     def sample_light(self) -> tuple[LightInstance, float]:
