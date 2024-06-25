@@ -5,7 +5,7 @@ from RayTracing.color import Color
 
 from timeit import default_timer as timer
 
-def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_max_depth : int):
+def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_max_depth : int, use_russian_roulette : bool, rr_min_depth : int):
     print("Starting render...")
     print(f"Render Type: {render_type}")
     print(f"film resolution is: {film.width} X {film.height}")
@@ -17,6 +17,9 @@ def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_ma
     
     if (render_type == "PATH_TRACER"):
         print(f"Path Tracer max depth is {pt_max_depth}.")
+        print(f"Russian Roulette is {use_russian_roulette}.")
+        if (use_russian_roulette):
+            print(f"Russian Roulette min depth is {rr_min_depth}.")
     
     total_pixels = film.width * film.height
     
@@ -39,7 +42,7 @@ def render(film : Film, camera : Camera, scene : Scene, render_type : str, pt_ma
                 if (render_type == "RAY_TRACER"):
                     color += scene.trace_ray(ray)
                 elif (render_type == "PATH_TRACER"):
-                    color += scene.trace_path(ray, pt_max_depth)
+                    color += scene.trace_path(ray, pt_max_depth, use_russian_roulette, rr_min_depth)
                 else:
                     print("Error: Render type not recognized.")
                     return

@@ -79,7 +79,7 @@ class Scene:
     
     
     
-    def trace_path(self, ray, max_depth : int) -> Color:
+    def trace_path(self, ray, max_depth : int, use_russian_roulette = False, rr_min_depth = 1) -> Color:
         
         # Init variables
         L = Color(0,0,0)
@@ -89,7 +89,7 @@ class Scene:
         
         # loop over different depths of the path
         for i in range(1 , max_depth + 1):
-            
+            #print(i)
             (hit_instance, hit) = self.compute_intersection(current_ray)
             
             # If there is no hit, break the loop. We do nothing. Color is what we got so far...
@@ -111,7 +111,6 @@ class Scene:
                     break
                 
             elif type(hit_instance) == ObjectInstance:
-                
                 # Calculate direct light contribution
                 material = hit_instance.material
                 
@@ -121,13 +120,29 @@ class Scene:
                 Le = self.get_light_radiance(p,n)
                 L += (Le * material.brdf()) * beta
                 
-                w_i_h, pdf = material.get_sample()
-                
-                w_i = self.hemisphere_to_global(p, n, w_i_h)
                 
                 # update variables for next iteration
-                beta *= ( material.brdf() * max(0,glm.dot(n,w_i)) ) / pdf                
+                
+                w_i_h, pdf = material.get_sample()
+                
+                w_i = self.hemisphere_to_global(p, n, w_i_h)                
+                
+                beta *= ( material.brdf() * max(0,glm.dot(n,w_i)) ) / pdf
+                
+                #print ("Current depth:", i, "Beta luminance: ", beta.r * 0.2126 + beta.g * 0.7152 + beta.b * 0.0722)     
+                
+                # apply russian roulette
+                if (use_russian_roulette):
+                    beta = self.russian_roulette(beta, i, rr_min_depth, max_depth)
+                
+                beta_luminance = beta.r * 0.2126 + beta.g * 0.7152 + beta.b * 0.0722
+                  
+                if (beta_luminance < 0.00001):
+                    break
+                                           
                 current_ray = Ray(p, w_i)
+                
+                
                 
         return L
     
@@ -208,4 +223,26 @@ class Scene:
 
         
         return glm.vec3(x,y,z), glm.normalize(-glm.vec3(x,y,z)), 1/(4*math.pi)
+    
+    
+    def russian_roulette(self, beta : Color, current_depth, min_depth, max_depth):
+        
+        if current_depth <= min_depth:
+            return beta
+        elif current_depth >= max_depth:
+            return Color(0,0,0)
+        
+        #calculate beta luminance
+        beta_luminance = beta.r * 0.2126 + beta.g * 0.7152 + beta.b * 0.0722
+        
+        q_temp = (current_depth - min_depth) / (max_depth - min_depth)
+        q = max(q_temp, glm.clamp( 1 - beta_luminance, 0 , 1) )
+        q = q_temp   
+        
+        #print ("q_temp: ", q_temp, "q: ", q) 
+                
+        if random.random() > q:
+            return beta / (1 - q)
+        else:
+            return Color(0,0,0)
     

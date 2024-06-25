@@ -75,9 +75,11 @@ if __name__ == '__main__':
     FILE_NAME =  "output.png"
     FILE_PATH =  "./Images"
     #WIDTH, HEIGHT = 120, 120
-    WIDTH, HEIGHT = 480, 480
-    FILM_SAMPLE_COUNT = 16
-    PT_MAX_DEPTH = 4
+    WIDTH, HEIGHT = 360, 360
+    FILM_SAMPLE_COUNT = 64
+    PT_MAX_DEPTH = 7
+    USE_RUSSIAN_ROULETTE = False
+    RR_MIN_DEPTH = 3 # Russian Roulette Min Depth
     
     film = Film(WIDTH,HEIGHT,FILM_SAMPLE_COUNT)
     
@@ -91,7 +93,7 @@ if __name__ == '__main__':
     
     if (PROFILE_APP == True):
         with Profile() as prof:
-            render(film, camera, scene, RENDER_TYPE, PT_MAX_DEPTH)
+            render(film, camera, scene, RENDER_TYPE, PT_MAX_DEPTH, USE_RUSSIAN_ROULETTE, RR_MIN_DEPTH)
             (
                 Stats(prof)
                 .strip_dirs()
@@ -99,7 +101,7 @@ if __name__ == '__main__':
                 .print_stats()        
             )
     else:
-        render(film, camera, scene, RENDER_TYPE, PT_MAX_DEPTH)
+        render(film, camera, scene, RENDER_TYPE, PT_MAX_DEPTH, USE_RUSSIAN_ROULETTE, RR_MIN_DEPTH)
 
     film.image.show()   
     
